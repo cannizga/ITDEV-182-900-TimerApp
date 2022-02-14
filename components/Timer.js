@@ -1,71 +1,86 @@
-import React from 'react';
+import React from 'react'
+import PropTypes from 'prop-types'
+
 import { StyleSheet, View, Text } from 'react-native';
+
+import { millisecondsToHuman } from '../utils/TimerUtils';
 import TimerButton from './TimerButton';
-export default class Timer extends React.Component {
-    static propTypes = {
-        id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        project: PropTypes.string.isRequired,
-        elapsed: PropTypes.number.isRequired,
-        isRunning: PropTypes.bool.isRequired,
-        onEditPress: PropTypes.func.isRequired,
-        onRemovePress: PropTypes.func.isRequired,
-        onStartPress: PropTypes.func.isRequired,
-        onStopPress: PropTypes.func.isRequired,
-    };
-    handleStartPress = () => {
-        const { id, onStartPress } = this.props;
-        onStartPress(id);
-    };
-    handleStopPress = () => {
-        const { id, onStopPress } = this.props;
-        onStopPress(id);
-    };
-    handleRemovePress = () => {
-        const { id, onRemovePress } = this.props;
-        onRemovePress(id);
-    };
-    renderActionButton() {
-        const { isRunning } = this.props;
+
+const Timer = (props) => {
+    const {
+        title,
+        project,
+        elapsed,
+        onEditPress,
+        id,
+        isRunning,
+        onRemovePress,
+        onStartPress,
+        onStopPress
+    } = props;
+    const elapsedString = millisecondsToHuman(elapsed);
+
+
+    const handleRemovePress = () => {
+        onRemovePress(id)
+    }
+
+    const handleStartPress = () => {
+        onStartPress(id)
+    }
+
+    const handleStopPress = () => {
+        onStopPress(id)
+    }
+
+    const renderActionButton = () => {
         if (isRunning) {
             return (
                 <TimerButton
                     color="#DB2828"
                     title="Stop"
-                    onPress={this.handleStopPress}
+                    onPress={handleStopPress}
                 />
-            );
+            )
         }
         return (
             <TimerButton
-        color = "#21BA45"
-        title = "Start"
-        onPress = { this.handleStartPress } /> );
+                color="#21BA45"
+                title="Start"
+                onPress={handleStartPress}
+            />
+        )
     }
-    render() {
-     const { elapsed, title, project, onEditPress } = this.props;
-     const elapsedString = millisecondsToHuman(elapsed);
-     return (
-      <View style={styles.timerContainer}>
-      <Text style={styles.title}>{title}</Text>
-      <Text>{project}</Text>
-      <Text style={styles.elapsedTime}>{elapsedString}</Text>
-      <View style={styles.buttonGroup}>
-      <TimerButton color="blue" small title="Edit" onPress={onEditPress} />
-      <TimerButton
-         color="blue"
-         small
-         title="Remove"
-         onPress={this.handleRemovePress} />
-       </View>
-       {this.renderActionButton()}
-       </View> );
-    }
+
+    return (
+        <View style={styles.timerContainer}>
+            <Text style={styles.title}>{title}</Text>
+            <Text>{project}</Text>
+            <Text style={styles.elapsedTime}>{elapsedString}</Text>
+            <View style={styles.buttonGroup}>
+                <TimerButton
+                    color="blue"
+                    small
+                    title="Edit"
+                    onPress={onEditPress} />
+                <TimerButton
+                    color="blue"
+                    small
+                    title="Remove"
+                    onPress={handleRemovePress}
+                />
+            </View>
+            {renderActionButton()}
+        </View>
+    )
 }
+
+const white = 'white';
+const myBorder = '#d6d7da'
 const styles = StyleSheet.create({
     timerContainer: {
-        backgroundColor: 'white',
-        borderColor: '#d6d7da',
+        backgroundColor: white,
+        borderColor: myBorder,
         borderWidth: 2,
         borderRadius: 10,
         padding: 15,
@@ -80,10 +95,24 @@ const styles = StyleSheet.create({
         fontSize: 26,
         fontWeight: 'bold',
         textAlign: 'center',
-        paddingVertical: 15,
+        paddingVertical: 15
     },
     buttonGroup: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-between'
     },
-});
+})
+
+Timer.propTypes = {
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    project: PropTypes.string.isRequired,
+    elapsed: PropTypes.number.isRequired,
+    isRunning: PropTypes.bool.isRequired,
+    onEditPress: PropTypes.func.isRequired,
+    onRemovePress: PropTypes.func.isRequired,
+    onStartPress: PropTypes.func.isRequired,
+    onStopPress: PropTypes.func.isRequired,
+}
+
+export default Timer;

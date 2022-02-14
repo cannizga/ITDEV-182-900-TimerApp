@@ -1,41 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+
 import { StyleSheet, View } from 'react-native';
+
 import TimerButton from './TimerButton';
 import TimerForm from './TimerForm';
-export default class ToggleableTimerForm extends React.Component {
-    state = {
-        isOpen: false,
-    };
 
-    static propTypes = {
-        onFormSubmit: PropTypes.func.isRequired,
-    };
+const ToggleableTimerForm = (props) => {
+    const { onFormSubmit } = props;
+    const [isOpen, setIsOpen] = useState(false);
 
-    handleFormClose = () => {
-        this.setState({ isOpen: false });
-    };
-
-    handleFormOpen = () => {
-        this.setState({ isOpen: true });
-    };
-
-    handleFormSubmit = timer => {
-        const { onFormSubmit } = this.props;
-        onFormSubmit(timer);
-        this.setState({ isOpen: false });
-    };
-
-    render() {
-        const { isOpen } = this.state;
-        return (
-         <View style={[styles.container, !isOpen && styles.buttonPadding]}>
-          {isOpen ? (
-          <TimerForm
-             onFormSubmit={this.handleFormSubmit}
-             onFormClose={this.handleFormClose}/> ) : ( <TimerButton title="+" color="black" onPress={this.handleFormOpen} /> )}
-            </View>
-        );
+    //Function to toggle state of the form
+    const handleFormOpen = () => {
+        setIsOpen(true)
     }
+
+    const handleFormSubmit = (timer) => {
+        onFormSubmit(timer)
+        setIsOpen(false)
+    }
+
+    const handleFormClose = () => {
+        setIsOpen(false)
+    }
+
+    return (
+        <View style={[styles.container, !isOpen && styles.buttonPadding]}>
+            {isOpen
+                ? <TimerForm
+                    onFormSubmit={handleFormSubmit}
+                    onFormClose={handleFormClose} />
+                : <TimerButton title="+" color="black" onPress={handleFormOpen} />}
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -44,5 +41,11 @@ const styles = StyleSheet.create({
     },
     buttonPadding: {
         paddingHorizontal: 15,
-    },
-});
+    }
+})
+
+ToggleableTimerForm.propTypes = {
+    onFormSubmit: PropTypes.func.isRequired
+}
+
+export default ToggleableTimerForm;
